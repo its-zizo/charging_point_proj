@@ -1,0 +1,49 @@
+{
+    "1": {
+        "client name": "Ziyad",
+        "devices": [
+            "Laptop",
+            "PowerBank"
+        ],
+        "price": 4
+    },
+    "2": {
+        "client name": "Test Client",
+        "devices": [
+            "Laptop"
+        ],
+        "price": 2
+    },
+    "3": {
+        "client name": "Test Client",
+        "devices": [
+            "Laptop"
+        ],
+        "price": 2
+    },
+    "4": {
+        "client name": "Adam",
+        "devices": [
+            "Phone without charger",
+            "Laptop",
+            "PowerBank"
+        ],
+        "price": 6
+    },
+    "5": {
+        "client name": "Nice work",
+        "devices": [
+            "PowerBank",
+            "Laptop",
+            "Laptop"
+        ],
+        "price": 6
+    },
+    "6": {
+        "client name": "Terminal Test",
+        "devices": [
+            "PowerBank"
+        ],
+        "price": 2
+    }
+}
