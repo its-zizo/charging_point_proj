@@ -1,0 +1,20 @@
+{
+    "1": {
+        "client name": "زياد",
+        "devices": [
+            "بوربانك",
+            "جوال مع شاحن"
+        ],
+        "price": 3,
+        "checkout": false
+    },
+    "2": {
+        "client name": "زياد",
+        "devices": [
+            "بوربانك",
+            "لابتوب بدون شاحن"
+        ],
+        "price": 6,
+        "checkout": true
+    }
+}

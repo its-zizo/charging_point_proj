@@ -1,0 +1,18 @@
+{
+    "1": {
+        "client name": "زياد",
+        "devices": [
+            "بوربانك"
+        ],
+        "price": 2,
+        "checkout": false
+    },
+    "2": {
+        "client name": "احمد",
+        "devices": [
+            "بوربانك"
+        ],
+        "price": 2,
+        "checkout": false
+    }
+}

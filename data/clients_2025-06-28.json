@@ -1,0 +1,22 @@
+{
+    "1": {
+        "client name": "Ziyad Nabhan",
+        "devices": [
+            "Laptop with less than 65W charger",
+            "Phone with charger",
+            "PowerBank"
+        ],
+        "price": 5,
+        "checkout": true
+    },
+    "2": {
+        "client name": "checkout TEST",
+        "devices": [
+            "PowerBank",
+            "PowerBank",
+            "PowerBank"
+        ],
+        "price": 6,
+        "checkout": false
+    }
+}
