@@ -17,13 +17,15 @@ class ChargingSystem:
             '7': {'name': 'Custom Device', 'custom': True}
         }
 
-    def file_generator(self):
+    def file_generator(self, date_str=None):
+        if date_str:
+            return f'data/clients_{date_str}.json'
         today = datetime.date.today()
         os.makedirs('data', exist_ok=True)
         return f'data/clients_{today}.json'
 
-    def import_data(self):
-        file_name = self.file_generator()
+    def import_data(self, date_str=None):
+        file_name = self.file_generator(date_str)
         if not os.path.exists(file_name):
             with open(file_name, 'w', encoding='utf-8') as file:
                 json.dump({}, file, indent=4, ensure_ascii=False)
@@ -33,8 +35,8 @@ class ChargingSystem:
             except json.JSONDecodeError:
                 return {}
 
-    def save_data(self, data):
-        with open(self.file_generator(), 'w', encoding='utf-8') as file:
+    def save_data(self, data, date_str=None):
+        with open(self.file_generator(date_str), 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
     def select_device(self):
@@ -123,23 +125,111 @@ class ChargingSystem:
         else:
             print("\nClient addition canceled.")
 
+    def add_loss(self):
+        date_str = input("Enter date for the loss (YYYY-MM-DD) or leave empty for today: ").strip()
+        if not date_str:
+            date_str = str(datetime.date.today())
+
+        file_path = self.file_generator(date_str)
+        data = {}
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as file:
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError:
+                    data = {}
+
+        description = input("Enter loss description: ").strip()
+        while True:
+            try:
+                cost = float(input("Enter repair cost: "))
+                break
+            except ValueError:
+                print("Invalid number. Try again.")
+
+        data['_loss'] = {
+            'description': description,
+            'cost': cost
+        }
+
+        self.save_data(data, date_str)
+        print(f"Loss recorded for {date_str}. Cost: {cost} ₪")
+
+    def get_daily_profit(self, date_str=None):
+        if not date_str:
+            date_str = str(datetime.date.today())
+
+        file_path = self.file_generator(date_str)
+        if not os.path.exists(file_path):
+            print("No data found for this date.")
+            return
+
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+
+        total = sum(client['price'] for key, client in data.items() if key != '_loss')
+        loss = data.get('_loss', {}).get('cost', 0)
+        net_profit = total - loss
+
+        print(f"\nProfit Summary for {date_str}:")
+        print(f"  Total income : {total} ₪")
+        print(f"  Loss recorded: {loss} ₪")
+        print(f"  Net profit   : {net_profit} ₪")
+
+    def monthly_profit(self):
+        year = input("Enter year (YYYY): ").strip()
+        month = input("Enter month (MM): ").strip()
+
+        if not (year.isdigit() and month.isdigit()):
+            print("Invalid input.")
+            return
+
+        total_income = 0
+        total_loss = 0
+
+        for filename in os.listdir('data'):
+            if filename.startswith(f'clients_{year}-{month}'):
+                with open(f'data/{filename}', 'r', encoding='utf-8') as file:
+                    data = json.load(file)
+                    daily_income = sum(client['price'] for key, client in data.items() if key != '_loss')
+                    loss = data.get('_loss', {}).get('cost', 0)
+                    total_income += daily_income
+                    total_loss += loss
+
+        net_profit = total_income - total_loss
+
+        print(f"\nMonthly Profit Summary for {year}-{month}:")
+        print(f"  Total income : {total_income} ₪")
+        print(f"  Total losses : {total_loss} ₪")
+        print(f"  Net profit   : {net_profit} ₪")
+
     def run(self):
         while True:
             print("\nMain Menu:")
             print("1. Add New Client")
             print("2. Find/Checkout Client")
-            print("3. Daily Profit")
-            print("4. Exit")
+            print("3. Daily Profit (Today)")
+            print("4. Monthly Profit")
+            print("5. Record Loss")
+            print("6. Daily Profit for Specific Date")
+            print("7. Exit")
 
-            choice = input("Select option (1-4): ")
+            choice = input("Select option (1-7): ")
 
             if choice == '1':
                 self.add_client()
             elif choice == '2':
                 print("Find Client functionality")
             elif choice == '3':
-                print("Daily Profit functionality")
+                self.get_daily_profit()
             elif choice == '4':
+                self.monthly_profit()
+            elif choice == '5':
+                self.add_loss()
+            elif choice == '6':
+                date_str = input("Enter date (YYYY-MM-DD): ").strip()
+                self.get_daily_profit(date_str)
+            elif choice == '7':
                 sys.exit()
             else:
                 print("Invalid choice!")
